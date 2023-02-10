@@ -1,6 +1,6 @@
 ## Openwrt云编译
 
-[![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)](https://github.com/P3TERX/Actions-OpenWrt/blob/master/LICENSE)
+![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)
 ![GitHub Stars](https://img.shields.io/github/stars/pipihu/lean_openwrt.svg?style=flat-square&label=Stars&logo=github)
 ![GitHub Forks](https://img.shields.io/github/forks/pipihu/lean_openwrt.svg?style=flat-square&label=Forks&logo=github)
 
