@@ -127,6 +127,7 @@ jobs:
         rm -rf sha256sums
         rm -rf *.buildinfo
         rm -rf *.manifest
+        rm -rf *.json
         rm -rf *kernel.bin
         rm -rf *rootfs.img.gz
         # find ./ ! -regex ".*\.img\|.*\.vmdk\|.*\.bin\|./" -exec rm {} \;
