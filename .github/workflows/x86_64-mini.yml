@@ -134,6 +134,12 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
+    - name: Delete release
+      uses: cb80/delrel@latest
+      with:
+        tag: ${{ env.FIRMWARE_TYPE }}
+        token:  ${{ secrets.RELEASES_TOKEN }}
+
     - name: Upload firmware to release
       id: release
       uses: ncipollo/release-action@v1
