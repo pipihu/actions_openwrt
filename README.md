@@ -1,6 +1,5 @@
 ## Openwrt云编译
 
-![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)
 ![GitHub Stars](https://img.shields.io/github/stars/pipihu/actions_openwrt.svg?style=flat-square&label=Stars&logo=github)
 ![GitHub Forks](https://img.shields.io/github/forks/pipihu/actions_openwrt.svg?style=flat-square&label=Forks&logo=github)
 
@@ -15,6 +14,7 @@
 - [GitHub Actions](https://github.com/features/actions)
 - [OpenWrt](https://github.com/openwrt/openwrt)
 - [Lean's OpenWrt](https://github.com/coolsnowwolf/lede)
+- [OpenClash](https://github.com/vernesong/OpenClash)
 - [Flippy](https://github.com/unifreq/openwrt_packit)
 - [P3TERX/Actions-OpenWrt](https://github.com/P3TERX/Actions-OpenWrt)
 - [tmate](https://github.com/tmate-io/tmate)
