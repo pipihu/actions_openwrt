@@ -9,7 +9,7 @@ on:
         required: false
         default: 'false'
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 21 * * *'
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -59,13 +59,6 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
     - name: Clone Openwrt source code
       working-directory: /workdir
       run: |
@@ -108,7 +101,7 @@ jobs:
       id: compile
       run: |
         cd openwrt
-        make -j$(nproc)
+        make V=s -j$(nproc)
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
