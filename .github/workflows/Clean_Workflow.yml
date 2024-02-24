@@ -13,7 +13,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
 
 jobs:
-  auto_clean:
+  clean_workflow:
     runs-on: ubuntu-latest
     steps:
       - name: Delete Old Releases
