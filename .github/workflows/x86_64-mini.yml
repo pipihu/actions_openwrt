@@ -148,7 +148,7 @@ jobs:
         tag: ${{ env.FIRMWARE_TYPE }}
         token:  ${{ secrets.RELEASES_TOKEN }}
 
-    - name: Upload firmware to release
+    - name: Upload Firmware To Release
       id: release
       uses: ncipollo/release-action@v1
       with:
