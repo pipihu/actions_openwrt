@@ -70,6 +70,6 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
     
-    - name: Hard drive capacity(Before Compile)
+    - name: Hard Drive Capacity(Before Compile)
       if: (!cancelled())
       run: df -hT
