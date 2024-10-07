@@ -7,7 +7,6 @@
 | 序号 | 设备 | 编译状态 | 下载链接 |
 | :----: | :----: | :---- | :----: |
 | 1 | [![](https://img.shields.io/badge/OpenWrt-x86--64%20mini-blue?style=flat-square)](https://github.com/pipihu/actions_openwrt/blob/main/.github/workflows/x86_64-mini.yml) | [![](https://img.shields.io/github/actions/workflow/status/pipihu/actions_openwrt/x86_64-mini.yml?branch=main&label=x86_64-mini&logo=openwrt&style=flat-square)](https://github.com/pipihu/actions_openwrt/actions/workflows/x86_64-mini.yml) | [![](https://shields.io/badge/-下载固件-informational?style=flat-square)](https://github.com/pipihu/actions_openwrt/releases/tag/x86_64-mini) |
-| 2 | [![](https://img.shields.io/badge/OpenWrt-XiaoMi--R3G-blue?style=flat-square)](https://github.com/pipihu/actions_openwrt/blob/main/.github/workflows/XiaoMi-R3G.yml) | [![](https://img.shields.io/github/actions/workflow/status/pipihu/actions_openwrt/XiaoMi-R3G.yml?branch=main&label=XiaoMi-R3G&logo=openwrt&style=flat-square)](https://github.com/pipihu/actions_openwrt/actions/workflows/XiaoMi-R3G.yml) | [![](https://shields.io/badge/-下载固件-informational?style=flat-square)](https://github.com/pipihu/actions_openwrt/releases/tag/XiaoMi-R3G) |
 ## 感谢
 
 - [Microsoft Azure](https://azure.microsoft.com)
