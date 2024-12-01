@@ -12,41 +12,41 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout Repository
-            uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-        - name: Install GitHub CLI and jq
-            run: |
-              sudo apt-get update
-              sudo apt-get install -y gh jq
+    - name: Install GitHub CLI and jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh jq
           
-        - name: Authenticate GitHub CLI
-            run: gh auth login --with-token <<< "${{ secrets.RELEASES_TOKEN }}"
+    - name: Authenticate GitHub CLI
+      run: gh auth login --with-token <<< "${{ secrets.RELEASES_TOKEN }}"
 
-        - name: SSH Connection To Actions
-            if: inputs.ssh == 'true'
-            uses: P3TERX/ssh2actions@v1.0.0
-            env:
-                TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-                TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    - name: SSH Connection To Actions
+      if: inputs.ssh == 'true'
+      uses: P3TERX/ssh2actions@v1.0.0
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-        - name: Get All Releases
-            id: get_releases
-            run: |
-                releases=$(gh release list --json tagName,createdAt)
-                echo "releases=$releases" >> $GITHUB_ENV
+    - name: Get All Releases
+      id: get_releases
+      run: |
+        releases=$(gh release list --json tagName,createdAt)
+        echo "releases=$releases" >> $GITHUB_ENV
 
-        - name: Filter and Delete Old Releases and Tags for Test
-            run: |
-                # 获取以 "Test" 开头的 Release，按创建时间排序并保留前 3 个，其余删除
-                to_delete=$(echo "$releases" | jq -c '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse | .[3:]')
+    - name: Filter and Delete Old Releases and Tags for Test
+      run: |
+        # 获取以 "Test" 开头的 Release，按创建时间排序并保留前 3 个，其余删除
+        to_delete=$(echo "$releases" | jq -c '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse | .[3:]')
 
-                echo "Releases to delete: $to_delete"
+        echo "Releases to delete: $to_delete"
 
-                for release in $(echo "$to_delete" | jq -r '.[] | .tagName'); do
-                  echo "Deleting release and tag: $release"
-                  gh release delete "$release" -y
-                  gh tag delete "$release"
-                done
-            env:
-                releases: ${{ env.releases }}
+        for release in $(echo "$to_delete" | jq -r '.[] | .tagName'); do
+          echo "Deleting release and tag: $release"
+          gh release delete "$release" -y
+          gh tag delete "$release"
+        done
+      env:
+        releases: ${{ env.releases }}
