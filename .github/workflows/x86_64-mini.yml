@@ -1,7 +1,6 @@
 name: x86_64-mini
 
 on:
-  repository_dispatch:
   workflow_dispatch:
     inputs:
       ssh:
