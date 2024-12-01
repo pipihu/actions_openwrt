@@ -2,11 +2,11 @@ name: Cleanup Old Releases and Tags
 
 on:
   workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'SSH connection to Actions'
-        required: false
-        default: 'false'
+  schedule:
+    - cron: '0 21 * * *'
+
+env:
+  PREFIXES: "x86_64-mini" # 定义需要清理的前缀，多个前缀用逗号分隔
 
 jobs:
   cleanup:
@@ -24,30 +24,40 @@ jobs:
         run: |
           gh auth login --with-token <<< "${{ secrets.RELEASES_TOKEN }}"
 
-      - name: SSH Connection To Actions
-        if: inputs.ssh == 'true'
-        uses: P3TERX/ssh2actions@v1.0.0
-        env:
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
       - name: Get All Releases
         id: get_releases
         run: |
           releases=$(gh release list --json tagName,createdAt)
-          echo "releases=$releases" >> $GITHUB_ENV
+          echo "RELEASES=$releases" >> $GITHUB_ENV
 
-      - name: Filter and Delete Old Releases and Tags for Test
+      - name: Filter and Delete Old Releases and Tags
         run: |
-          # ��ȡ�� "Test" ��ͷ�� Release��������ʱ�����򲢱���ǰ 3 ��������ɾ��
-          to_delete=$(echo "$releases" | jq -c '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse | .[3:]')
+          # 从环境变量中读取前缀列表
+          IFS=',' read -ra PREFIX_ARRAY <<< "$PREFIXES"
 
-          echo "Releases to delete: $to_delete"
+          # 遍历所有前缀并清理相关 release 和 tag
+          for PREFIX in "${PREFIX_ARRAY[@]}"; do
+            echo "Processing prefix: $PREFIX"
+            
+            # 筛选符合前缀的 Release 并保留前 3 个，其余删除
+            TO_DELETE=$(echo "$RELEASES" | jq -c "[.[] | select(.tagName | startswith(\"$PREFIX\"))] | sort_by(.createdAt) | reverse | .[3:]")
 
-          for release in $(echo "$to_delete" | jq -r '.[] | .tagName'); do
-            echo "Deleting release and tag: $release"
-            gh release delete "$release" -y
-            gh tag delete "$release"
+            echo "Releases to delete for prefix '$PREFIX': $TO_DELETE"
+
+            for RELEASE in $(echo "$TO_DELETE" | jq -r '.[] | .tagName'); do
+              echo "Deleting release and tag: $RELEASE"
+              
+              # 删除 Release
+              gh release delete "$RELEASE" -y
+              
+              # 尝试删除远程 Tag（即使本地不存在也不会报错）
+              git push origin --delete "$RELEASE" || echo "Failed to delete remote tag $RELEASE"
+              
+              # 同步获取远程标签后删除本地标签
+              git fetch --tags
+              git tag -d "$RELEASE" 2>/dev/null || echo "Tag $RELEASE not found locally"
+            done
           done
         env:
-          releases: ${{ env.releases }}
+          PREFIXES: ${{ env.PREFIXES }}
+          RELEASES: ${{ env.RELEASES }}
