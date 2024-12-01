@@ -1,0 +1,34 @@
+name: Cleanup Old Releases and Tags
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Get All Releases
+        id: get_releases
+        run: |
+          # 获取所有的 Release 信息
+          releases=$(gh release list --json tagName,createdAt --jq '.[] | {tagName, createdAt}' | jq -s '.')
+          echo "releases=${releases}" >> $GITHUB_ENV
+
+      - name: Filter Releases for Test
+        id: filter_Test
+        run: |
+          # 筛选 Test 的 Release，按创建时间排序
+          filtered=$(echo $releases | jq '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse')
+          echo "Test_releases=${filtered}" >> $GITHUB_ENV
+
+      - name: Delete Old Releases and Tags for Test
+        run: |
+          # 保留前 3 个，其余删除
+          to_delete=$(echo $Test_releases | jq '.[3:]')
+          for release in $(echo $to_delete | jq -r '.[] | .tagName'); do
+            gh release delete $release -y
+            gh tag delete $release
+          done
