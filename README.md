@@ -6,7 +6,7 @@
 ## 固件下载
 | 序号 | 设备 | 编译状态 | 下载链接 |
 | :----: | :----: | :---- | :----: |
-| 1 | [![](https://img.shields.io/badge/OpenWrt-x86--64%20mini-blue?style=flat-square)](https://github.com/pipihu/actions_openwrt/blob/main/.github/workflows/x86_64-mini.yml) | [![](https://img.shields.io/github/actions/workflow/status/pipihu/actions_openwrt/x86_64-mini.yml?branch=main&label=x86_64-mini&logo=openwrt&style=flat-square)](https://github.com/pipihu/actions_openwrt/actions/workflows/x86_64-mini.yml) | [![](https://shields.io/badge/-下载固件-informational?style=flat-square)](https://github.com/pipihu/actions_openwrt/releases/tag/x86_64-mini) |
+| 1 | [![](https://img.shields.io/badge/OpenWrt-x86--64%20mini-blue?style=flat-square)](https://github.com/pipihu/actions_openwrt/blob/main/.github/workflows/x86_64-mini.yml) | [![](https://img.shields.io/github/actions/workflow/status/pipihu/actions_openwrt/x86_64-mini.yml?branch=main&label=x86_64-mini&logo=openwrt&style=flat-square)](https://github.com/pipihu/actions_openwrt/actions/workflows/x86_64-mini.yml) | [![](https://shields.io/badge/-下载固件-informational?style=flat-square)](https://github.com/pipihu/actions_openwrt/releases?q=x86_64-mini&expanded=true) |
 ## 感谢
 
 - [Microsoft Azure](https://azure.microsoft.com)
