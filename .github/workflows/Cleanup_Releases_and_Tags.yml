@@ -3,7 +3,7 @@ name: Cleanup Old Releases and Tags
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 3 * * *'
 
 env:
   PREFIXES: "x86_64-mini" # 定义需要清理的前缀，多个前缀用逗号分隔
