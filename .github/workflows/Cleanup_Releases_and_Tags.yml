@@ -2,33 +2,51 @@ name: Cleanup Old Releases and Tags
 
 on:
   workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+        - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Get All Releases
+        - name: Install GitHub CLI and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh jq
+          
+        - name: Authenticate GitHub CLI
+        run: gh auth login --with-token <<< "${{ secrets.RELEASES_TOKEN }}"
+
+        - name: SSH Connection To Actions
+        if: inputs.ssh == 'true'
+        uses: P3TERX/ssh2actions@v1.0.0
+        env:
+            TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+            TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+        - name: Get All Releases
         id: get_releases
         run: |
-          # è·å–æ‰€æœ‰çš„ Release ä¿¡æ¯
-          releases=$(gh release list --json tagName,createdAt --jq '.[] | {tagName, createdAt}' | jq -s '.')
-          echo "releases=${releases}" >> $GITHUB_ENV
+            releases=$(gh release list --json tagName,createdAt)
+            echo "releases=$releases" >> $GITHUB_ENV
 
-      - name: Filter Releases for Test
-        id: filter_Test
-        run: |
-          # ç­›é€‰ Test çš„ Releaseï¼ŒæŒ‰åˆ›å»ºæ—¶é—´æ’åº
-          filtered=$(echo $releases | jq '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse')
-          echo "Test_releases=${filtered}" >> $GITHUB_ENV
-
-      - name: Delete Old Releases and Tags for Test
-        run: |
-          # ä¿ç•™å‰ 3 ä¸ªï¼Œå…¶ä½™åˆ é™¤
-          to_delete=$(echo $Test_releases | jq '.[3:]')
-          for release in $(echo $to_delete | jq -r '.[] | .tagName'); do
-            gh release delete $release -y
-            gh tag delete $release
-          done
+        - name: Filter and Delete Old Releases and Tags for Test
+          run: |
+            # »ñÈ¡ÒÔ "Test" ¿ªÍ·µÄ Release£¬°´´´½¨Ê±¼äÅÅĞò²¢±£ÁôÇ° 3 ¸ö£¬ÆäÓàÉ¾³ı
+            to_delete=$(echo "$releases" | jq -c '[.[] | select(.tagName | startswith("Test"))] | sort_by(.createdAt) | reverse | .[3:]')
+            
+            echo "Releases to delete: $to_delete"
+            
+            for release in $(echo "$to_delete" | jq -r '.[] | .tagName'); do
+              echo "Deleting release and tag: $release"
+              gh release delete "$release" -y
+              gh tag delete "$release"
+            done
+          env:
+            releases: ${{ env.releases }}
