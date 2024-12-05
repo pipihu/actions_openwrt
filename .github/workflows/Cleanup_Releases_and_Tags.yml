@@ -27,7 +27,7 @@ jobs:
       - name: Get All Releases
         id: get_releases
         run: |
-          releases=$(gh release list --json tagName,createdAt)
+          releases=$(gh release list --json tagName,publishedAt)
           echo "RELEASES=$releases" >> $GITHUB_ENV
 
       - name: Filter and Delete Old Releases and Tags
@@ -40,7 +40,7 @@ jobs:
             echo "Processing prefix: $PREFIX"
             
             # 筛选符合前缀的 Release 并保留前 3 个，其余删除
-            TO_DELETE=$(echo "$RELEASES" | jq -c "[.[] | select(.tagName | startswith(\"$PREFIX\"))] | sort_by(.createdAt) | reverse | .[3:]")
+            TO_DELETE=$(echo "$RELEASES" | jq -c "[.[] | select(.tagName | startswith(\"$PREFIX\"))] | sort_by(.publishedAt) | reverse | .[3:]")
 
             echo "Releases to delete for prefix '$PREFIX': $TO_DELETE"
 
@@ -48,14 +48,14 @@ jobs:
               echo "Deleting release and tag: $RELEASE"
               
               # 删除 Release
-              # gh release delete "$RELEASE" -y
+              gh release delete "$RELEASE" -y
               
               # 尝试删除远程 Tag（即使本地不存在也不会报错）
-              # git push origin --delete "$RELEASE" || echo "Failed to delete remote tag $RELEASE"
+              git push origin --delete "$RELEASE" || echo "Failed to delete remote tag $RELEASE"
               
               # 同步获取远程标签后删除本地标签
-              # git fetch --tags
-              # git tag -d "$RELEASE" 2>/dev/null || echo "Tag $RELEASE not found locally"
+              git fetch --tags
+              git tag -d "$RELEASE" 2>/dev/null || echo "Tag $RELEASE not found locally"
             done
           done
         env:
