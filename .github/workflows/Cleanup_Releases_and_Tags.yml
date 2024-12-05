@@ -48,14 +48,14 @@ jobs:
               echo "Deleting release and tag: $RELEASE"
               
               # 删除 Release
-              gh release delete "$RELEASE" -y
+              # gh release delete "$RELEASE" -y
               
               # 尝试删除远程 Tag（即使本地不存在也不会报错）
-              git push origin --delete "$RELEASE" || echo "Failed to delete remote tag $RELEASE"
+              # git push origin --delete "$RELEASE" || echo "Failed to delete remote tag $RELEASE"
               
               # 同步获取远程标签后删除本地标签
-              git fetch --tags
-              git tag -d "$RELEASE" 2>/dev/null || echo "Tag $RELEASE not found locally"
+              # git fetch --tags
+              # git tag -d "$RELEASE" 2>/dev/null || echo "Tag $RELEASE not found locally"
             done
           done
         env:
